@@ -1,3 +1,17 @@
 spring:
   application:
     name: weaver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    url: jdbc:postgresql://localhost:5432/weaver
+    username: weaver
+    password: weaver
+  main:
+    banner-mode: off
+
+weaver:
+  jwt:
+    secret: weaver+super+duper+secret+key+goes+here+please+change+it+before+you+deploy+it+in+production
+    expiration: 86400000

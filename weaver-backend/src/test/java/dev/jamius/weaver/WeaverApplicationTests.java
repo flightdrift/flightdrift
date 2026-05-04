@@ -1,4 +1,4 @@
-package com.jamiussiam.weaver;
+package dev.jamius.weaver;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
