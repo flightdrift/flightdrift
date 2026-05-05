@@ -61,6 +61,17 @@ public class TeamController {
         return ResponseEntity.ok(new ApiResponse<>(true, "Team updated successfully", Map.of("team", team)));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<?>> deleteTeam(
+            Authentication authentication,
+            @PathVariable Long id) {
+
+        String username = authentication.getName();
+        teamService.deleteTeam(username, id);
+
+        return ResponseEntity.ok(new ApiResponse<>(true, "Team deleted successfully", null));
+    }
+
     @PostMapping("/{id}/leave")
     public ResponseEntity<ApiResponse<?>> leaveTeam(
             Authentication authentication,

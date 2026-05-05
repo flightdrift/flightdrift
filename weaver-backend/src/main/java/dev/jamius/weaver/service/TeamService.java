@@ -81,6 +81,19 @@ public class TeamService {
     }
 
     @Transactional
+    public void deleteTeam(String username, Long teamId) {
+        AccountTeam accountTeam = accountTeamRepository.findByAccountUsernameAndTeamId(username, teamId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found or access denied"));
+
+        if (accountTeam.getRole() != TeamRole.ADMIN) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only admins can delete the team");
+        }
+
+        teamRepository.delete(accountTeam.getTeam());
+    }
+
+
+    @Transactional
     public void addAccountToTeam(String username, Long teamId, TeamRole role) {
         Account targetAccount = accountRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Target user not found"));

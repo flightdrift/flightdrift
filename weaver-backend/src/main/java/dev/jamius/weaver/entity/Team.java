@@ -1,5 +1,6 @@
 package dev.jamius.weaver.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -44,9 +45,9 @@ public class Team extends Auditable {
     @Column(name = "picture_link", length = 1024)
     private String pictureLink;
 
-    @OneToMany(mappedBy = "team")
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<AccountTeam> accounts = new HashSet<>();
 
-    @OneToMany(mappedBy = "team")
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Board> boards = new HashSet<>();
 }
