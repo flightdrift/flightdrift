@@ -1,17 +1,29 @@
 package dev.jamius.weaver.controller;
 
 import dev.jamius.weaver.dto.ApiResponse;
+import dev.jamius.weaver.dto.auth.Signin;
 import dev.jamius.weaver.dto.auth.Signup;
 import dev.jamius.weaver.entity.Account;
+import dev.jamius.weaver.entity.BlacklistedAuthToken;
 import dev.jamius.weaver.repository.AccountRepository;
+import dev.jamius.weaver.repository.BlacklistedAuthTokenRepository;
 import dev.jamius.weaver.service.AppSettingsService;
 import dev.jamius.weaver.service.InvitationService;
+import dev.jamius.weaver.util.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +32,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
+import static dev.jamius.weaver.config.filter.JwtRequestFilter.AUTHORIZATION_HEADER_PREFIX;
+import static dev.jamius.weaver.config.filter.JwtRequestFilter.BEARER_PREFIX;
 import static org.springframework.util.StringUtils.hasText;
 
 @Slf4j
@@ -30,20 +44,42 @@ public class AuthController {
 
     private final AccountRepository accountRepository;
 
+    private final AuthenticationManager authenticationManager;
+
+    private final UserDetailsService userDetailsService;
+
+    private final JwtUtil jwtUtil;
+    
     private final InvitationService invitationService;
 
     private final AppSettingsService appSettingsService;
 
     private final PasswordEncoder passwordEncoder;
 
-    @GetMapping("/invitation-token")
-    public ResponseEntity<ApiResponse<?>> getInvitationToken() {
-        String invitationToken = invitationService.getInvitationCode();
+    private final BlacklistedAuthTokenRepository blacklistedAuthTokenRepository;
+
+    private final CacheManager cacheManager;
+
+    @PostMapping("/signin")
+    public ResponseEntity<ApiResponse<?>> signin(@Valid @RequestBody Signin signin) {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(signin.username(), signin.password())
+            );
+        } catch (BadCredentialsException exception) {
+            log.info("Invalid sign in credentials for username: {}", signin.username());
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponse<>(false, "Invalid username or password", null));
+        }
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(signin.username());
+        String token = jwtUtil.generateToken(userDetails);
 
         return ResponseEntity.ok(new ApiResponse<>(
                 true,
-                "Invitation token created successfully",
-                Map.of("invitationToken", invitationToken)
+                "Signed in successfully",
+                Map.of("token", token)
         ));
     }
 
@@ -81,11 +117,12 @@ public class AuthController {
                     .body(new ApiResponse<>(false, "Email is already taken", null));
         }
 
-        Account account = new Account();
-        account.setName(signup.name());
-        account.setEmail(signup.email());
-        account.setUsername(signup.username());
-        account.setPassword(passwordEncoder.encode(signup.password()));
+        Account account = Account.builder()
+                .name(signup.name())
+                .email(signup.email())
+                .username(signup.username())
+                .password(passwordEncoder.encode(signup.password()))
+                .build();
 
         Account savedAccount = accountRepository.save(account);
 
@@ -100,5 +137,35 @@ public class AuthController {
                                 "username", savedAccount.getUsername()
                         )
                 ));
+    }
+
+    @GetMapping("/invitation-token")
+    public ResponseEntity<ApiResponse<?>> getInvitationToken() {
+        String invitationToken = invitationService.getInvitationCode();
+
+        return ResponseEntity.ok(new ApiResponse<>(
+                true,
+                "Invitation token created successfully",
+                Map.of("invitationToken", invitationToken)
+        ));
+    }
+
+    @PostMapping("/signout")
+    public ResponseEntity<ApiResponse<?>> signout(HttpServletRequest request) {
+        String authHeader = request.getHeader(AUTHORIZATION_HEADER_PREFIX);
+        log.info("Received signout request with auth header: {}", authHeader);
+
+        if (authHeader != null && authHeader.startsWith(BEARER_PREFIX)) {
+            String token = authHeader.substring(BEARER_PREFIX.length());
+            blacklistedAuthTokenRepository.save(new BlacklistedAuthToken(token));
+
+            Cache cache = cacheManager.getCache("blacklisted_tokens");
+            if (cache != null) {
+                cache.evict(token);
+            }
+
+            return ResponseEntity.ok(new ApiResponse<>(true, "Signed out successfully", null));
+        }
+        return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Invalid authorization header", null));
     }
 }

@@ -1,5 +1,6 @@
 package dev.jamius.weaver.config.filter;
 
+import dev.jamius.weaver.repository.BlacklistedAuthTokenRepository;
 import dev.jamius.weaver.util.JwtUtil;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,12 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
 
+    public static final String AUTHORIZATION_HEADER_PREFIX = "Authorization";
+
+    public static final String BEARER_PREFIX = "Bearer ";
+
+    private final BlacklistedAuthTokenRepository blacklistedAuthTokenRepository;
+
     private final UserDetailsService userDetailsService;
 
     private final JwtUtil jwtUtil;
@@ -33,17 +40,23 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             @NonNull FilterChain chain
     ) throws ServletException, IOException {
 
-        final String authorizationHeader = request.getHeader("Authorization");
+        final String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER_PREFIX);
 
         String username = null;
         String jwt = null;
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
+        if (authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX)) {
+            jwt = authorizationHeader.substring(BEARER_PREFIX.length());
             username = jwtUtil.extractUsername(jwt);
         }
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        boolean tokenBlacklisted = blacklistedAuthTokenRepository.findByToken(jwt).isPresent();
+
+        if (!tokenBlacklisted
+                && jwt != null
+                && username != null
+                && SecurityContextHolder.getContext().getAuthentication() == null) {
+
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
             if (jwtUtil.validateToken(jwt, userDetails)) {
