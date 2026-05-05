@@ -2,7 +2,7 @@ package dev.jamius.weaver.dto.auth;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record Signup(
+public record SignupRequest(
         @NotBlank(message = "Name cannot be blank")
         String name,
 

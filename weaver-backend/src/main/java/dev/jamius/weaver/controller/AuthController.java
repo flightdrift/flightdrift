@@ -1,8 +1,8 @@
 package dev.jamius.weaver.controller;
 
 import dev.jamius.weaver.dto.ApiResponse;
-import dev.jamius.weaver.dto.auth.Signin;
-import dev.jamius.weaver.dto.auth.Signup;
+import dev.jamius.weaver.dto.auth.SigninRequest;
+import dev.jamius.weaver.dto.auth.SignupRequest;
 import dev.jamius.weaver.entity.Account;
 import dev.jamius.weaver.entity.BlacklistedAuthToken;
 import dev.jamius.weaver.entity.TeamRole;
@@ -48,7 +48,7 @@ public class AuthController {
     private final UserDetailsService userDetailsService;
 
     private final JwtUtil jwtUtil;
-    
+
     private final InvitationService invitationService;
 
     private final AppSettingsService appSettingsService;
@@ -61,19 +61,19 @@ public class AuthController {
     private final TeamService teamService;
 
     @PostMapping("/signin")
-    public ResponseEntity<ApiResponse<?>> signin(@Valid @RequestBody Signin signin) {
+    public ResponseEntity<ApiResponse<?>> signin(@Valid @RequestBody SigninRequest signinRequest) {
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(signin.username(), signin.password())
+                    new UsernamePasswordAuthenticationToken(signinRequest.username(), signinRequest.password())
             );
         } catch (BadCredentialsException exception) {
-            log.info("Invalid sign in credentials for username: {}", signin.username());
+            log.info("Invalid sign in credentials for username: {}", signinRequest.username());
 
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new ApiResponse<>(false, "Invalid username or password", null));
         }
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(signin.username());
+        UserDetails userDetails = userDetailsService.loadUserByUsername(signinRequest.username());
         String token = jwtUtil.generateToken(userDetails);
 
         return ResponseEntity.ok(new ApiResponse<>(
@@ -85,8 +85,8 @@ public class AuthController {
 
     @PostMapping("/signup")
     @Transactional
-    public ResponseEntity<ApiResponse<?>> signup(@Valid @RequestBody Signup signup) {
-        boolean hasInvitationCode = hasText(signup.invitationCode());
+    public ResponseEntity<ApiResponse<?>> signup(@Valid @RequestBody SignupRequest signupRequest) {
+        boolean hasInvitationCode = hasText(signupRequest.invitationCode());
         boolean firstUser = accountRepository.isFirstUser();
 
         if (!appSettingsService.isSignupEnabled() && !hasInvitationCode && !firstUser) {
@@ -96,38 +96,38 @@ public class AuthController {
         }
 
         if (hasInvitationCode) {
-            if (!invitationService.isInvitationCodeValid(signup.invitationCode())) {
-                log.info("Invalid invitation code: {} Username: {}", signup.invitationCode(), signup.username());
+            if (!invitationService.isInvitationCodeValid(signupRequest.invitationCode())) {
+                log.info("Invalid invitation code: {} Username: {}", signupRequest.invitationCode(), signupRequest.username());
 
                 return ResponseEntity.badRequest()
                         .body(new ApiResponse<>(false, "Invalid invitation code", null));
             }
         }
 
-        if (accountRepository.existsByUsername(signup.username())) {
-            log.info("Username is already taken: {}", signup.username());
+        if (accountRepository.existsByUsername(signupRequest.username())) {
+            log.info("Username is already taken: {}", signupRequest.username());
 
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(new ApiResponse<>(false, "Username is already taken", null));
         }
 
-        if (accountRepository.existsByEmail(signup.email())) {
-            log.info("Email is already taken: {}", signup.email());
+        if (accountRepository.existsByEmail(signupRequest.email())) {
+            log.info("Email is already taken: {}", signupRequest.email());
 
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(new ApiResponse<>(false, "Email is already taken", null));
         }
 
         Account account = Account.builder()
-                .name(signup.name())
-                .email(signup.email())
-                .username(signup.username())
-                .password(passwordEncoder.encode(signup.password()))
+                .name(signupRequest.name())
+                .email(signupRequest.email())
+                .username(signupRequest.username())
+                .password(passwordEncoder.encode(signupRequest.password()))
                 .build();
 
         Account savedAccount = accountRepository.save(account);
 
-        long invitedTeamId =  invitationService.getTeamIdFromInvitationCode(signup.invitationCode());
+        long invitedTeamId = invitationService.getTeamIdFromInvitationCode(signupRequest.invitationCode());
 
         if (invitedTeamId != -1) {
             teamService.addAccountToTeam(account.getUsername(), invitedTeamId, TeamRole.MEMBER);
@@ -160,7 +160,7 @@ public class AuthController {
     @PostMapping("/signout")
     public ResponseEntity<ApiResponse<?>> signout(HttpServletRequest request) {
         String authHeader = request.getHeader(AUTHORIZATION_HEADER_PREFIX);
-        log.info("Received signout request with auth header: {}", authHeader);
+        log.info("Received sign out request with auth header: {}", authHeader);
 
         if (authHeader != null && authHeader.startsWith(BEARER_PREFIX)) {
             String token = authHeader.substring(BEARER_PREFIX.length());
