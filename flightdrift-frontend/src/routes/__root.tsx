@@ -9,7 +9,7 @@ import type { JSX } from "react";
 const RootLayout = (): JSX.Element => (
   <>
     <Outlet />
-    <TanStackRouterDevtools />
+    <TanStackRouterDevtools position={"bottom-right"}/>
   </>
 );
 
