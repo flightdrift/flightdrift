@@ -1,11 +1,16 @@
-import {createRootRoute, Outlet} from '@tanstack/react-router';
-import {TanStackRouterDevtools} from '@tanstack/react-router-devtools';
+/*
+ * Author: Jamius Siam
+ * Since: 06/05/2026
+ */
+import { createRootRoute, Outlet } from "@tanstack/react-router";
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import type { JSX } from "react";
 
-const RootLayout = () => (
+const RootLayout = (): JSX.Element => (
   <>
-    <Outlet/>
-    <TanStackRouterDevtools/>
+    <Outlet />
+    <TanStackRouterDevtools />
   </>
-)
+);
 
-export const Route = createRootRoute({component: RootLayout})
+export const Route = createRootRoute({ component: RootLayout });

@@ -2,11 +2,11 @@
  * Author: Jamius Siam
  * Since: 28/05/2026
  */
-
 import { Link } from "@tanstack/react-router";
 import { Sparkles, Inbox } from "lucide-react";
+import type { JSX } from "react";
 
-const Header = () => {
+const Header = (): JSX.Element => {
   return (
     <div className="flex h-5.5 px-3">
       <div>

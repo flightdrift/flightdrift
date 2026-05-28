@@ -1,22 +1,23 @@
-import { createFileRoute } from "@tanstack/react-router";
-import Header from "@/components/header/header.tsx";
-import Sidebar from "@/components/header/sidebar.tsx";
+/*
+ * Author: Jamius Siam
+ * Since: 06/05/2026
+ */
+import { createFileRoute, Link } from "@tanstack/react-router";
+import type { JSX } from "react";
+import { Button } from "@/components/ui/button.tsx";
+
+// TODO: Implement a default login page later
+const Index = (): JSX.Element => {
+  return (
+    <div className="flex flex-col gap-3 items-center justify-center w-full h-screen">
+      Flightdrift Login
+      <Button>
+        <Link to={"/dash/about"}>Dashboard</Link>
+      </Button>
+    </div>
+  );
+};
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
-
-function Index() {
-  return (
-    <div className="flex flex-col gap-3.5 p-4 w-full h-screen">
-      <Header />
-      <div className="flex-1 flex gap-3">
-        <Sidebar />
-        <main className="bg-white flex-1 drop-shadow-md drop-shadow-black/2 rounded-lg p-4">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Commodi distinctio dolorum enim
-          error explicabo illum nam nulla odit quisquam quod.
-        </main>
-      </div>
-    </div>
-  );
-}

@@ -1,3 +1,7 @@
+/*
+ * Author: Jamius Siam
+ * Since: 06/05/2026
+ */
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
