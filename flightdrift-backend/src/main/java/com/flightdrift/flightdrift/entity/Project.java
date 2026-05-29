@@ -36,6 +36,9 @@ public class Project extends Auditable {
     @Column(nullable = false, length = 50)
     private String name;
 
+    @Column(nullable = false, length = 10)
+    private String code;
+
     @Column(name = "icon_url", length = 1024)
     private String iconUrl;
 

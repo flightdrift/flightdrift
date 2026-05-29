@@ -6,6 +6,7 @@ CREATE TABLE project
 (
     id              UUID PRIMARY KEY DEFAULT uuidv7(),
     name            VARCHAR(50)  NOT NULL,
+    code            VARCHAR(10)  NOT NULL,
     icon_url        VARCHAR(1024),
     organization_id UUID REFERENCES organization (id) NOT NULL,
     version         BIGINT    DEFAULT 0,

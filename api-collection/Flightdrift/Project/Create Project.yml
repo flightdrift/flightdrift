@@ -14,6 +14,7 @@ http:
     data: |-
       {
           "name": "Flightdrift",
+          "code": "ARTEMIS",
           "iconUrl": "https://example.com/project.png"
       }
   auth: inherit
@@ -42,6 +43,7 @@ examples:
         data: |-
           {
               "name": "Flightdrift",
+              "code": "ARTEMIS",
               "iconUrl": "https://example.com/project.png"
           }
     response:
@@ -60,6 +62,7 @@ examples:
               "project": {
                 "id": "019e6a80-e269-7ddc-9e6b-d25eccfd192d",
                 "name": "Flightdrift",
+                "code": "ARTEMIS",
                 "iconUrl": "https://example.com/project.png",
                 "organizationId": "019e6a80-6593-7416-8876-dec6b99510ab"
               }

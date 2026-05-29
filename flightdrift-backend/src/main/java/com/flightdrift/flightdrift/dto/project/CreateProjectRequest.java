@@ -12,6 +12,10 @@ public record CreateProjectRequest(
         @Size(max = 50, message = "Name must not exceed 50 characters")
         String name,
 
+        @NotBlank(message = "Code is required")
+        @Size(max = 10, message = "Code must not exceed 10 characters")
+        String code,
+
         @Size(max = 1024, message = "Icon URL must not exceed 1024 characters")
         String iconUrl
 ) {
