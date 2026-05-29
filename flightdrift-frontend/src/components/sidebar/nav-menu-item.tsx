@@ -22,7 +22,7 @@ const NavMenuItem = ({
       type="button"
       variant={variant}
       className={cn(
-        "h-7 w-full justify-start gap-2 rounded-[5px] px-2 py-4 text-[13px] font-normal leading-none text-[#616161]",
+        "h-7 w-full justify-start gap-2 rounded-[5px] px-2 py-4 text-[13px] font-medium leading-none text-[#616161]",
         className,
         active && "bg-nav-active hover:bg-nav-active",
       )}

@@ -15,8 +15,8 @@ import {
   Folder,
   House,
   Inbox,
+  Layers,
   ListFilterPlus,
-  NotepadText,
   Sparkles,
 } from "lucide-react";
 import type { JSX } from "react";
@@ -24,20 +24,20 @@ import type { JSX } from "react";
 const mainMenu = [
   {
     text: "Inbox",
-    icon: <Inbox size={16} strokeWidth={1.8} className="relative bottom-[0.5px]" />,
+    icon: <Inbox strokeWidth={1.8} className="relative bottom-px size-4" />,
   },
   {
     text: "Home",
-    icon: <House size={16} strokeWidth={1.8} className="relative bottom-[0.5px]" />,
+    icon: <House strokeWidth={1.8} className="relative bottom-[0.5px] size-4" />,
     active: true,
   },
   {
     text: "My Items",
-    icon: <Files size={16} strokeWidth={1.8} />,
+    icon: <Files strokeWidth={1.8} className="size-4" />,
   },
   {
     text: "Bookmarks",
-    icon: <BookmarkCheck size={16} strokeWidth={1.8} className="relative bottom-px" />,
+    icon: <BookmarkCheck strokeWidth={1.8} className="relative bottom-px size-4" />,
   },
 ];
 
@@ -47,16 +47,16 @@ const projects = [
     iconUrl: "/project.webp",
     menus: [
       {
-        text: "Wiki",
-        icon: <NotepadText size={16} strokeWidth={1.8} />,
+        text: "Pages",
+        icon: <Layers strokeWidth={1.7} className="size-4" />,
       },
       {
         text: "Items",
-        icon: <Folder size={16} strokeWidth={1.8} />,
+        icon: <Folder strokeWidth={1.8} className="relative bottom-px size-4" />,
       },
       {
         text: "Milestone",
-        icon: <Flag size={16} strokeWidth={1.8} />,
+        icon: <Flag strokeWidth={1.8} className="relative bottom-px size-4" />,
       },
     ],
   },
@@ -82,7 +82,7 @@ const Sidebar = (): JSX.Element => {
                 "bg-[#3BB1FF] text-white shadow-[0_3px_4px_rgba(59,176,255,0.15)] " +
                 "hover:bg-[#3BB1FF] hover:text-white w-[28px]"
               }>
-              <FilePlusCorner size={14} strokeWidth={1.8} />
+              <FilePlusCorner className="size-4" strokeWidth={1.8} />
             </NavMenuItem>
           </div>
 
