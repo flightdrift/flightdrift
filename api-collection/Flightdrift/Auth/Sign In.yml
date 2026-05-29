@@ -73,6 +73,12 @@ examples:
             "success": true,
             "message": "Signed in successfully",
             "data": {
-              "token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYW1pdXMxOSIsImlhdCI6MTc3OTkwMjgxMiwiZXhwIjoxODY2MzAyODEyfQ.Y0Rca6ESQvV16n_VJxP4rzxVERvRaSzonuOFTfyD0Ytz1H4cMEnQ-crukQ0i0l_Bwf72m_aCUfqSamdABNB6Vg"
+              "token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYW1pdXMxOSIsImlhdCI6MTc3OTkwMjgxMiwiZXhwIjoxODY2MzAyODEyfQ.Y0Rca6ESQvV16n_VJxP4rzxVERvRaSzonuOFTfyD0Ytz1H4cMEnQ-crukQ0i0l_Bwf72m_aCUfqSamdABNB6Vg",
+              "userInfo": {
+                "id": "0c71345a-0a0f-42a5-88dc-43616f65d5e3",
+                "name": "Jamius Siam",
+                "email": "jamius@example.com",
+                "username": "jamius19"
+              }
             }
           }

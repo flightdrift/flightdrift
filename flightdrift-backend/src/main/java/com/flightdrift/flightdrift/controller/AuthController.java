@@ -15,6 +15,7 @@ import com.flightdrift.flightdrift.util.JwtUtil;
 import com.flightdrift.flightdrift.dto.auth.InvitationTokenResponse;
 import com.flightdrift.flightdrift.dto.auth.SignupResponse;
 import com.flightdrift.flightdrift.dto.auth.TokenResponse;
+import com.flightdrift.flightdrift.dto.auth.UserInfoResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -91,11 +92,22 @@ public class AuthController {
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(signinRequest.username());
         String token = jwtUtil.generateToken(userDetails);
+        Account account = accountRepository
+                .findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new IllegalStateException("Authenticated account not found"));
 
         return ResponseEntity.ok(new ApiResponse<>(
                 true,
                 "Signed in successfully",
-                new TokenResponse(token)
+                new TokenResponse(
+                        token,
+                        new UserInfoResponse(
+                                account.getId(),
+                                account.getName(),
+                                account.getEmail(),
+                                account.getUsername()
+                        )
+                )
         ));
     }
 

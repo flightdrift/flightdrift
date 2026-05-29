@@ -11,7 +11,7 @@ http:
     data: |-
       {
           "name": "Jamius Siam",
-          "email": "jamiussiam@gmail.com",
+          "email": "jamius@example.com",
           "username": "jamius19",
           "password": "123"
       }
@@ -69,9 +69,9 @@ examples:
             "success": true,
             "message": "Account created successfully",
             "data": {
-              "id": "019e6a79-5e97-7b4d-9f53-b7d0e4a3f96c",
+              "id": "019e73b4-33b7-74fd-ad65-3bd068e2e46c",
               "name": "Jamius Siam",
-              "email": "jamiussiam@gmail.com",
+              "email": "jamius@example.com",
               "username": "jamius19"
             }
           }
