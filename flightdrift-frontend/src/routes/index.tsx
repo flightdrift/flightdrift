@@ -12,7 +12,7 @@ const Index = (): JSX.Element => {
     <div className="flex flex-col gap-3 items-center justify-center w-full h-screen">
       Flightdrift Login
       <Button>
-        <Link to={"/dash/about"}>Dashboard</Link>
+        <Link to={"/dash/item"}>Dashboard</Link>
       </Button>
     </div>
   );

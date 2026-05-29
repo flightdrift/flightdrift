@@ -9,10 +9,11 @@ Here are some rules for the project:
     1. Use `camelCase` for variables and functions.
     2. Use `PascalCase` for classes and interfaces.
     3. Use `kebab-case` for file names.
-    4. Use arrow functions wherever possible.
-    5. Use `const` whenever possible.
-    6. Avoid `any` type usage unless it's too convoluted to avoid.
-    7. Use explicit return types.
-    8. Don't exceed 120 characters per line, try to keep it to 80.
-    9. Don't install NPM packages without explicit permission from the user.
-   10. Don't run vite or browser to check the visuals for now.
+    4. Use `@` for imports.
+    5. Use arrow functions wherever possible.
+    6. Use `const` whenever possible.
+    7. Avoid `any` type usage unless it's too convoluted to avoid.
+    8. Use explicit return types.
+    9. Don't exceed 120 characters per line, try to keep it to 80.
+    10. Don't install NPM packages without explicit permission from the user.
+   11. Don't run vite or browser to check the visuals for now.
