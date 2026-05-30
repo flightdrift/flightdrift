@@ -81,6 +81,7 @@ const Signup = (): JSX.Element => {
             }}>
             {(field) => {
               const error = getFieldError(field.state.meta.errors);
+              const errorId = `${field.name}-error`;
 
               return (
                 <Field>
@@ -91,10 +92,11 @@ const Signup = (): JSX.Element => {
                     autoComplete="name"
                     value={field.state.value}
                     aria-invalid={Boolean(error)}
+                    aria-describedby={error ? errorId : undefined}
                     onBlur={field.handleBlur}
                     onChange={(event) => field.handleChange(event.target.value.trim())}
                   />
-                  <FieldError>{error}</FieldError>
+                  <FieldError id={errorId}>{error}</FieldError>
                 </Field>
               );
             }}
@@ -108,6 +110,7 @@ const Signup = (): JSX.Element => {
             }}>
             {(field) => {
               const error = getFieldError(field.state.meta.errors);
+              const errorId = `${field.name}-error`;
 
               return (
                 <Field>
@@ -119,10 +122,11 @@ const Signup = (): JSX.Element => {
                     autoComplete="email"
                     value={field.state.value}
                     aria-invalid={Boolean(error)}
+                    aria-describedby={error ? errorId : undefined}
                     onBlur={field.handleBlur}
                     onChange={(event) => field.handleChange(event.target.value.trim())}
                   />
-                  <FieldError>{error}</FieldError>
+                  <FieldError id={errorId}>{error}</FieldError>
                 </Field>
               );
             }}
@@ -136,6 +140,7 @@ const Signup = (): JSX.Element => {
             }}>
             {(field) => {
               const error = getFieldError(field.state.meta.errors);
+              const errorId = `${field.name}-error`;
 
               return (
                 <Field>
@@ -146,10 +151,11 @@ const Signup = (): JSX.Element => {
                     autoComplete="username"
                     value={field.state.value}
                     aria-invalid={Boolean(error)}
+                    aria-describedby={error ? errorId : undefined}
                     onBlur={field.handleBlur}
                     onChange={(event) => field.handleChange(event.target.value.trim())}
                   />
-                  <FieldError>{error}</FieldError>
+                  <FieldError id={errorId}>{error}</FieldError>
                 </Field>
               );
             }}
@@ -163,6 +169,7 @@ const Signup = (): JSX.Element => {
             }}>
             {(field) => {
               const error = getFieldError(field.state.meta.errors);
+              const errorId = `${field.name}-error`;
 
               return (
                 <Field>
@@ -174,10 +181,11 @@ const Signup = (): JSX.Element => {
                     autoComplete="new-password"
                     value={field.state.value}
                     aria-invalid={Boolean(error)}
+                    aria-describedby={error ? errorId : undefined}
                     onBlur={field.handleBlur}
                     onChange={(event) => field.handleChange(event.target.value)}
                   />
-                  <FieldError>{error}</FieldError>
+                  <FieldError id={errorId}>{error}</FieldError>
                 </Field>
               );
             }}
