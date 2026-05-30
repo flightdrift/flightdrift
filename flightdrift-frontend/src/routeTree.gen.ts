@@ -10,12 +10,21 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DashRouteRouteImport } from './routes/dash/route'
+import { Route as AuthRouteRouteImport } from './routes/auth/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as DashItemRouteImport } from './routes/dash/item'
+import { Route as AuthIndexRouteImport } from './routes/auth/index'
+import { Route as DashItemsRouteImport } from './routes/dash/items'
+import { Route as AuthSignupRouteImport } from './routes/auth/signup'
+import { Route as AuthSigninRouteImport } from './routes/auth/signin'
 
 const DashRouteRoute = DashRouteRouteImport.update({
   id: '/dash',
   path: '/dash',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRouteRoute = AuthRouteRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -23,38 +32,80 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashItemRoute = DashItemRouteImport.update({
-  id: '/item',
-  path: '/item',
+const AuthIndexRoute = AuthIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const DashItemsRoute = DashItemsRouteImport.update({
+  id: '/items',
+  path: '/items',
   getParentRoute: () => DashRouteRoute,
+} as any)
+const AuthSignupRoute = AuthSignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthSigninRoute = AuthSigninRouteImport.update({
+  id: '/signin',
+  path: '/signin',
+  getParentRoute: () => AuthRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRouteRouteWithChildren
   '/dash': typeof DashRouteRouteWithChildren
-  '/dash/item': typeof DashItemRoute
+  '/auth/signin': typeof AuthSigninRoute
+  '/auth/signup': typeof AuthSignupRoute
+  '/dash/items': typeof DashItemsRoute
+  '/auth/': typeof AuthIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dash': typeof DashRouteRouteWithChildren
-  '/dash/item': typeof DashItemRoute
+  '/auth/signin': typeof AuthSigninRoute
+  '/auth/signup': typeof AuthSignupRoute
+  '/dash/items': typeof DashItemsRoute
+  '/auth': typeof AuthIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRouteRouteWithChildren
   '/dash': typeof DashRouteRouteWithChildren
-  '/dash/item': typeof DashItemRoute
+  '/auth/signin': typeof AuthSigninRoute
+  '/auth/signup': typeof AuthSignupRoute
+  '/dash/items': typeof DashItemsRoute
+  '/auth/': typeof AuthIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dash' | '/dash/item'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/dash'
+    | '/auth/signin'
+    | '/auth/signup'
+    | '/dash/items'
+    | '/auth/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dash' | '/dash/item'
-  id: '__root__' | '/' | '/dash' | '/dash/item'
+  to: '/' | '/dash' | '/auth/signin' | '/auth/signup' | '/dash/items' | '/auth'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/dash'
+    | '/auth/signin'
+    | '/auth/signup'
+    | '/dash/items'
+    | '/auth/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRouteRoute: typeof AuthRouteRouteWithChildren
   DashRouteRoute: typeof DashRouteRouteWithChildren
 }
 
@@ -67,6 +118,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -74,22 +132,59 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dash/item': {
-      id: '/dash/item'
-      path: '/item'
-      fullPath: '/dash/item'
-      preLoaderRoute: typeof DashItemRouteImport
+    '/auth/': {
+      id: '/auth/'
+      path: '/'
+      fullPath: '/auth/'
+      preLoaderRoute: typeof AuthIndexRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/dash/items': {
+      id: '/dash/items'
+      path: '/items'
+      fullPath: '/dash/items'
+      preLoaderRoute: typeof DashItemsRouteImport
       parentRoute: typeof DashRouteRoute
+    }
+    '/auth/signup': {
+      id: '/auth/signup'
+      path: '/signup'
+      fullPath: '/auth/signup'
+      preLoaderRoute: typeof AuthSignupRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/auth/signin': {
+      id: '/auth/signin'
+      path: '/signin'
+      fullPath: '/auth/signin'
+      preLoaderRoute: typeof AuthSigninRouteImport
+      parentRoute: typeof AuthRouteRoute
     }
   }
 }
 
+interface AuthRouteRouteChildren {
+  AuthSigninRoute: typeof AuthSigninRoute
+  AuthSignupRoute: typeof AuthSignupRoute
+  AuthIndexRoute: typeof AuthIndexRoute
+}
+
+const AuthRouteRouteChildren: AuthRouteRouteChildren = {
+  AuthSigninRoute: AuthSigninRoute,
+  AuthSignupRoute: AuthSignupRoute,
+  AuthIndexRoute: AuthIndexRoute,
+}
+
+const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
+  AuthRouteRouteChildren,
+)
+
 interface DashRouteRouteChildren {
-  DashItemRoute: typeof DashItemRoute
+  DashItemsRoute: typeof DashItemsRoute
 }
 
 const DashRouteRouteChildren: DashRouteRouteChildren = {
-  DashItemRoute: DashItemRoute,
+  DashItemsRoute: DashItemsRoute,
 }
 
 const DashRouteRouteWithChildren = DashRouteRoute._addFileChildren(
@@ -98,6 +193,7 @@ const DashRouteRouteWithChildren = DashRouteRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRouteRoute: AuthRouteRouteWithChildren,
   DashRouteRoute: DashRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
