@@ -11,6 +11,7 @@ import java.util.UUID;
 public record ProjectResponse(
         UUID id,
         String name,
+        String code,
         String iconUrl,
         UUID organizationId
 ) {
@@ -18,6 +19,7 @@ public record ProjectResponse(
         return new ProjectResponse(
                 project.getId(),
                 project.getName(),
+                project.getCode(),
                 project.getIconUrl(),
                 project.getOrganization().getId()
         );

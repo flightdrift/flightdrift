@@ -47,6 +47,7 @@ public class ProjectService {
 
         Project project = Project.builder()
                 .name(request.name())
+                .code(request.code())
                 .iconUrl(request.iconUrl())
                 .organization(organization)
                 .build();
@@ -81,6 +82,7 @@ public class ProjectService {
         }
 
         project.setName(request.name());
+        project.setCode(request.code());
         project.setIconUrl(request.iconUrl());
 
         project = projectRepository.save(project);
