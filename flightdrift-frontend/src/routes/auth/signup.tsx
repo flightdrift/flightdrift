@@ -37,7 +37,7 @@ const Signup = (): JSX.Element => {
 
       try {
         const response = await signupMutation.mutateAsync({
-          name: value.name,
+          name: value.name.trim(),
           email: value.email,
           username: value.username,
           password: value.password,
@@ -94,7 +94,7 @@ const Signup = (): JSX.Element => {
                     aria-invalid={Boolean(error)}
                     aria-describedby={error ? errorId : undefined}
                     onBlur={field.handleBlur}
-                    onChange={(event) => field.handleChange(event.target.value.trim())}
+                    onChange={(event) => field.handleChange(event.target.value)}
                   />
                   <FieldError id={errorId}>{error}</FieldError>
                 </Field>
